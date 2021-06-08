@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html style="margin: 0;">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>360&deg; VIEWER</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/panolens@0.11.0/build/panolens.min.js"></script>
+    <script src="./assets/ColladaLoader.js"></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+        
+        .container {
+            max-width: 500px;
+            max-height: 500px;
+            min-width: 200px;
+            min-height: 250px;
+            padding: 40px 20px;
+            background: #fff;
+            color: #000;
+            border-radius: 3px;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            text-align: center;
+        }
+        
+        .container div,
+        .container a {
+            text-align: left;
+            padding: 2px 0;
+        }
+        
+        .container a:link,
+        .container a:visited {
+            color: #777;
+        }
+        
+        .container img {
+            max-height: 200px;
+        }
+        
+        .container .product-name {
+            font-size: 1.2em;
+        }
+        
+        .container .product-attribute {
+            border-bottom: 1px solid #000;
+            width: 100%;
+        }
+        
+        .container .proudct-price {
+            font-size: 1.1em;
+            text-align: right;
+        }
+        
+        #chair-container {
+            width: 300px;
+        }
+        
+        #chair-container i {
+            color: #ef9e40;
+            font-size: 1.5em;
+        }
+        
+        #chair-container .color {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin: 1px;
+            border: 1px solid #aaa;
+            border-radius: 50%;
+        }
+        
+        #chair-container .color:hover {
+            cursor: pointer;
+        }
+        /* interior style ends */
+        
+        .drawTarget {
+            position: absolute;
+            margin: 0;
+            padding: 0;
+            /* height: 100% !important;
+                        width: 100% !important; */
+            overflow: hidden;
+        }
+        
+        #func-point {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            z-index: 10030;
+        }
+        
+        #fp-positions span {
+            position: absolute;
+            display: block;
+            width: 17px;
+            height: 17px;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAI9JREFUeNpiZDB0nclAPkhnuLCbgQXEqk2NZiFVd/PspX9ABoAAC5LgNWINAFqqBWXKgwgmsj3y+ycbkOQjaMj/c7t6iDGPiYEKgCqGsBDyAjKf0cithChDkBWCDMClcXCGCV5DiPEK9WMHKSmTZwg4MyGSMsmAEVgUQFgXdsvD8gKJ4BML1AC4ADkuAQgwAHmKKp+yWWP+AAAAAElFTkSuQmCC') no-repeat;
+            cursor: pointer;
+        }
+        
+        #fp-descriptions div.description {
+            position: absolute;
+            width: 400px;
+            background-color: #fff;
+            box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        
+        #fp-descriptions div.description {
+            top: 107px;
+            left: 447px;
+        }
+        
+        .fp-closeBtn {
+            float: right;
+            width: 30px;
+            height: 30px;
+            margin: 0;
+            cursor: pointer !important;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAOJJREFUeNrslj0KwzAMhWPfIJ1yt06FLM3sY3hulkKm3M1TewRXAg0huMZPDs1QC4QXPX8R1k9MjLE7w2x3kjXwH4O994b8ormUdazXZtyTB7rgCkI5PogeBzvnXnTcyJdSuMQtrBO97o1JvJbCd9C1urhK4Ci0uKpzcA0UaqcUXAtlM+iS2MCe5KMGqgIL/EHHnXwm6PSTySUZc6Yzn2ifq8C7N53QPleBU4WE9LkKnKteLdzWQGvg9qgxiMK/tpOsxID26eZjh9yiyGX8FjE0HCR+EP2xA6T9czVwA6fsI8AA2QyeklLTOxQAAAAASUVORK5CYII=') no-repeat;
+        }
+        
+        .clearfix {
+            zoom: 1;
+        }
+        
+        .clearfix:after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+        
+        #fp-descriptions .fp-label {
+            font-size: 1.2em;
+            line-height: 1.6em;
+            font-weight: bold;
+            margin: 15px 20px 0;
+        }
+        
+        #fp-descriptions .fp-description {
+            margin: 0 20px 18px;
+        }
+    </style>
+</head>
+
+<body style="margin: 0;">
+    <div id="exteriorStage">
+        <div class="stage">
+            <div class="angle0" id="angle0" style="visibility: visible; cursor: pointer;">
+                <img class="drawTarget layer0" draggable="false" id="" src="" style="z-index: 0;">                                 <img class="drawTarget layer1" draggable="false" id="" src="" style="z-index: 1;"></div>
+            <div class="angle1" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 100;" src="">                                 <img class="drawTarget layer1" draggable="false" id="" style="z-index: 101;" src="">
+            </div>
+            <div class="angle2" id="angle2" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 200;" src="">                                 <img class="drawTarget layer1" draggable="false" id="" style="z-index: 201;" src="">
+            </div>
+            <div class="angle3" id="angle3" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">                                 <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle4" id="angle4" id="angle4" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">                                 <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle5" id="angle5" id="angle5" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 500;" src="">                                 <img class="drawTarget layer1" draggable="false" id="" style="z-index: 501;" src="">
+            </div>
+            <div class="angle6" id="angle6" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 600;" src="">                                 <img class="drawTarget layer1" draggable="false" id="" style="z-index: 601;" src="">
+            </div>
+            <div class="angle7" id="angle7" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 700;" src="">                                 <img class="drawTarget layer1" draggable="false" id="" style="z-index: 701;" src="">
+            </div>
+            <div class="angle8" id="angle8" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 800;" src="">                                 <img class="drawTarget layer1" draggable="false" id="" style="z-index: 801;" src="">
+            </div>
+            <div class="angle9" id="angle9" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 900;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 901;" src="">
+            </div>
+
+            <div class="angle10" id="angle10" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">              <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+
+            <div class="angle11" id="angle1" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">               <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle12" id="angle12" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">              <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle13" id="angle13" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">              <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle14" id="angle14" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">              <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle15" id="angle15" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle16" id="angle16" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle17" id="angle17" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle18" id="angle18" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle19" id="angle19" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle20" id="angle20" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle21" id="angle21" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle22" id="angle22" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle23" id="angle23" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle24" id="angle24" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle25" id="angle25" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle26" id="angle26" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle27" id="angle27" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle28" id="angle28" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle29" id="angle29" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle30" id="angle30" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle31" id="angle31" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle32" id="angle32" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle33" id="angle33" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle34" id="angle34" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+            <div class="angle35" id="angle35" style="visibility: hidden;">
+                <img class="drawTarget layer0" draggable="false" id="" style="z-index: 300;" src="">             <img class="drawTarget layer1" draggable="false" id="" style="z-index: 301;" src="">
+            </div>
+        </div>
+        <div class="tmp" style="display: none;visibility: hidden;"></div>
+    </div>
+    <div id="func-point">
+        <div id="fp-positions">
+            <div id="fp-descriptions"></div>
+        </div>
+    </div>
+    <script>
+        let visibleImage = 0;        
+        let rightpoint = 0;        
+        let mX = 0;        
+        var mY = 0;        
+        let leftpoint = 36;        
+        let receivedArray = [];        
+        var panorama, viewer, dae, path, format, loader, pointlight, intersect, infospots;        
+        let EXT_E = {            
+            "EXT_GRD": ["materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_01.jpg",             "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_02.jpg",             "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_03.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_04.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_05.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_06.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_07.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_08.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_09.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_10.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_11.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_12.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_13.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_14.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_15.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_16.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_17.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_18.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_19.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_20.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_21.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_22.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_23.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_24.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_25.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_26.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_27.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_28.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_29.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_30.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_31.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_32.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_33.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_34.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_35.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_36.jpg"            ],
+            "EXT_WH": [                
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_01.png",                 
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_02.png",                 
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_03.png",                 
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_04.png",                 
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_05.png",                 
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_06.png",                 
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_07.png",                 
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_08.png",                 
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_09.png",                 
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_10.png",                 
+                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_11.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_12.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_13.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_14.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_15.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_16.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_17.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_18.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_19.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_20.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_21.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_22.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_23.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_24.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_25.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_26.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_27.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_28.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_29.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_30.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_31.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_32.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_33.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_34.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_35.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_36.png"            
+            ],
+            "ACC1": [                
+                "materials/EXT-G_001/EXT-G_001_01.png",                 "materials/EXT-G_001/EXT-G_001_02.png",                 "materials/EXT-G_001/EXT-G_001_03.png",                 "materials/EXT-G_001/EXT-G_001_04.png",                 "materials/EXT-G_001/EXT-G_001_05.png",                 "materials/EXT-G_001/EXT-G_001_06.png",                 "materials/EXT-G_001/EXT-G_001_07.png",                 "materials/EXT-G_001/EXT-G_001_08.png",                 "materials/EXT-G_001/EXT-G_001_09.png",                 "materials/EXT-G_001/EXT-G_001_10.png",                 "materials/EXT-G_001/EXT-G_001_11.png",                 "materials/EXT-G_001/EXT-G_001_12.png",                 "materials/EXT-G_001/EXT-G_001_13.png",                 "materials/EXT-G_001/EXT-G_001_14.png",                 "materials/EXT-G_001/EXT-G_001_15.png",                 "materials/EXT-G_001/EXT-G_001_16.png",                 "materials/EXT-G_001/EXT-G_001_17.png",                 "materials/EXT-G_001/EXT-G_001_18.png",                 "materials/EXT-G_001/EXT-G_001_19.png",                 "materials/EXT-G_001/EXT-G_001_20.png",                 "materials/EXT-G_001/EXT-G_001_21.png",                 "materials/EXT-G_001/EXT-G_001_22.png",                 "materials/EXT-G_001/EXT-G_001_23.png",                 "materials/EXT-G_001/EXT-G_001_24.png",                 "materials/EXT-G_001/EXT-G_001_25.png",                 "materials/EXT-G_001/EXT-G_001_26.png",                 "materials/EXT-G_001/EXT-G_001_27.png",                 "materials/EXT-G_001/EXT-G_001_28.png",                 "materials/EXT-G_001/EXT-G_001_29.png",                 "materials/EXT-G_001/EXT-G_001_30.png",                 "materials/EXT-G_001/EXT-G_001_31.png",                 "materials/EXT-G_001/EXT-G_001_32.png",                 "materials/EXT-G_001/EXT-G_001_33.png",                 "materials/EXT-G_001/EXT-G_001_34.png",                 "materials/EXT-G_001/EXT-G_001_35.png",                 "materials/EXT-G_001/EXT-G_001_36.png",             
+            ],
+                        "ACC2": [                
+                "materials/EXT-G_001/EXT-G_001_01.png",                 "materials/EXT-G_001/EXT-G_001_02.png",                 "materials/EXT-G_001/EXT-G_001_03.png",                 "materials/EXT-G_001/EXT-G_001_04.png",                 "materials/EXT-G_001/EXT-G_001_05.png",                 "materials/EXT-G_001/EXT-G_001_06.png",                 "materials/EXT-G_001/EXT-G_001_07.png",                 "materials/EXT-G_001/EXT-G_001_08.png",                 "materials/EXT-G_001/EXT-G_001_09.png",                 "materials/EXT-G_001/EXT-G_001_10.png",                 "materials/EXT-G_001/EXT-G_001_11.png",                 "materials/EXT-G_001/EXT-G_001_12.png",                 "materials/EXT-G_001/EXT-G_001_13.png",                 "materials/EXT-G_001/EXT-G_001_14.png",                 "materials/EXT-G_001/EXT-G_001_15.png",                 "materials/EXT-G_001/EXT-G_001_16.png",                 "materials/EXT-G_001/EXT-G_001_17.png",                 "materials/EXT-G_001/EXT-G_001_18.png",                 "materials/EXT-G_001/EXT-G_001_19.png",                 "materials/EXT-G_001/EXT-G_001_20.png",                 "materials/EXT-G_001/EXT-G_001_21.png",                 "materials/EXT-G_001/EXT-G_001_22.png",                 "materials/EXT-G_001/EXT-G_001_23.png",                 "materials/EXT-G_001/EXT-G_001_24.png",                 "materials/EXT-G_001/EXT-G_001_25.png",                 "materials/EXT-G_001/EXT-G_001_26.png",                 "materials/EXT-G_001/EXT-G_001_27.png",                 "materials/EXT-G_001/EXT-G_001_28.png",                 "materials/EXT-G_001/EXT-G_001_29.png",                 "materials/EXT-G_001/EXT-G_001_30.png",                 "materials/EXT-G_001/EXT-G_001_31.png",                 "materials/EXT-G_001/EXT-G_001_32.png",                 "materials/EXT-G_001/EXT-G_001_33.png",                 "materials/EXT-G_001/EXT-G_001_34.png",                 "materials/EXT-G_001/EXT-G_001_35.png",                 "materials/EXT-G_001/EXT-G_001_36.png",             
+            ],
+                        "HOTSPOT": [                {
+                "feature_id": "FP_001",
+                "label": "Rigid ladder frame",
+                "description": "From the very first generation, the Jimny has always featured a ladder frame that offers a solid foundation for serious off-road performance.",
+                "thumbnail": ["thumbnails/FP_001.jpg"],
+                "visible": true,
+                "positions": [{
+                    "x": 559,
+                    "y": 314
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 302,
+                    "y": 315
+                }, {
+                    "x": 311,
+                    "y": 320
+                }, {
+                    "x": 321,
+                    "y": 322
+                }, {
+                    "x": 334,
+                    "y": 323
+                }, {
+                    "x": 354,
+                    "y": 324
+                }, {
+                    "x": 374,
+                    "y": 325
+                }, {
+                    "x": 394,
+                    "y": 326
+                }, {
+                    "x": 417,
+                    "y": 327
+                }, {
+                    "x": 440,
+                    "y": 331
+                }, {
+                    "x": 463,
+                    "y": 336
+                }, {
+                    "x": 484,
+                    "y": 340
+                }, {
+                    "x": 504,
+                    "y": 342
+                }, {
+                    "x": 520,
+                    "y": 342
+                }, {
+                    "x": 537,
+                    "y": 337
+                }, {
+                    "x": 546,
+                    "y": 331
+                }, {
+                    "x": 555,
+                    "y": 322
+                }, {
+                    "x": 563,
+                    "y": 306
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 299,
+                    "y": 313
+                }, {
+                    "x": 307,
+                    "y": 321
+                }, {
+                    "x": 316,
+                    "y": 322
+                }, {
+                    "x": 323,
+                    "y": 323
+                }, {
+                    "x": 337,
+                    "y": 323
+                }, {
+                    "x": 356,
+                    "y": 324
+                }, {
+                    "x": 376,
+                    "y": 325
+                }, {
+                    "x": 398,
+                    "y": 326
+                }, {
+                    "x": 420,
+                    "y": 326
+                }, {
+                    "x": 443,
+                    "y": 326
+                }, {
+                    "x": 465,
+                    "y": 326
+                }, {
+                    "x": 484,
+                    "y": 325
+                }, {
+                    "x": 504,
+                    "y": 325
+                }, {
+                    "x": 521,
+                    "y": 323
+                }, {
+                    "x": 538,
+                    "y": 322
+                }, {
+                    "x": 550,
+                    "y": 320
+                }],
+                "memo": ""
+            },                  {
+                "feature_id": "FP_002",
+                "label": "3-link rigid axle suspension with coil spring",
+                "description": "Full-width rigid axles equipped in both the front and rear. When an obstacle pushes one wheel up, the axle presses the other wheel down to increase tyre contact in rough road conditions.",
+                "thumbnail": ["thumbnails/FP_002.jpg"],
+                "visible": true,
+                "positions": [{
+                    "x": 576,
+                    "y": 302
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 347,
+                    "y": 323
+                }, {
+                    "x": 381,
+                    "y": 326
+                }, {
+                    "x": 417,
+                    "y": 327
+                }, {
+                    "x": 454,
+                    "y": 327
+                }, {
+                    "x": 489,
+                    "y": 327
+                }, {
+                    "x": 523,
+                    "y": 325
+                }, {
+                    "x": 552,
+                    "y": 325
+                }, {
+                    "x": 578,
+                    "y": 327
+                }, {
+                    "x": 597,
+                    "y": 329
+                }, {
+                    "x": 611,
+                    "y": 326
+                }, {
+                    "x": 617,
+                    "y": 321
+                }, {
+                    "x": 620,
+                    "y": 313
+                }, {
+                    "x": 617,
+                    "y": 304
+                }, {
+                    "x": 609,
+                    "y": 295
+                }, {
+                    "x": 595,
+                    "y": 292
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 344,
+                    "y": 325
+                }, {
+                    "x": 373,
+                    "y": 325
+                }, {
+                    "x": 405,
+                    "y": 324
+                }, {
+                    "x": 439,
+                    "y": 323
+                }, {
+                    "x": 472,
+                    "y": 322
+                }, {
+                    "x": 504,
+                    "y": 321
+                }, {
+                    "x": 534,
+                    "y": 320
+                }, {
+                    "x": 559,
+                    "y": 318
+                }, {
+                    "x": 580,
+                    "y": 317
+                }, {
+                    "x": 595,
+                    "y": 315
+                }, {
+                    "x": 605,
+                    "y": 312
+                }, {
+                    "x": 610,
+                    "y": 309
+                }, {
+                    "x": 609,
+                    "y": 306
+                }, {
+                    "x": 602,
+                    "y": 304
+                }, {
+                    "x": 592,
+                    "y": 302
+                }],
+                "memo": ""
+            },                  {
+                "feature_id": "FP_003",
+                "label": "1.5 litre engine",
+                "description": "The robust 1.5L engine generates strong torque throughout a wide rpm range for powerful off-road performance. Small and lightweight, it also delivers high fuel efficiency.",
+                "thumbnail": ["thumbnails/FP_003.jpg"],
+                "visible": true,
+                "positions": [{
+                    "x": 395,
+                    "y": 192
+                }, {
+                    "x": 430,
+                    "y": 191
+                }, {
+                    "x": 465,
+                    "y": 193
+                }, {
+                    "x": 506,
+                    "y": 192
+                }, {
+                    "x": 541,
+                    "y": 191
+                }, {
+                    "x": 569,
+                    "y": 189
+                }, {
+                    "x": 587,
+                    "y": 188
+                }, {
+                    "x": 604,
+                    "y": 188
+                }, {
+                    "x": 617,
+                    "y": 188
+                }, {
+                    "x": 630,
+                    "y": 188
+                }, {
+                    "x": 640,
+                    "y": 189
+                }, {
+                    "x": 644,
+                    "y": 189
+                }, {
+                    "x": 636,
+                    "y": 185
+                }, {
+                    "x": 618,
+                    "y": 177
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 211,
+                    "y": 187
+                }, {
+                    "x": 211,
+                    "y": 187
+                }, {
+                    "x": 217,
+                    "y": 187
+                }, {
+                    "x": 233,
+                    "y": 188
+                }, {
+                    "x": 247,
+                    "y": 188
+                }, {
+                    "x": 261,
+                    "y": 188
+                }, {
+                    "x": 273,
+                    "y": 189
+                }, {
+                    "x": 303,
+                    "y": 191
+                }, {
+                    "x": 331,
+                    "y": 191
+                }, {
+                    "x": 361,
+                    "y": 191
+                }],
+                "memo": ""
+            },                  {
+                "feature_id": "FP_004",
+                "label": "Practical drip rail",
+                "description": "The drip rail can keep your head dry and your spirits bright when entering and exiting by helping to prevent water from dripping off the roof.",
+                "thumbnail": ["thumbnails/FP_004.jpg"],
+                "visible": true,
+                "positions": [{
+                    "x": 549,
+                    "y": 109
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 311,
+                    "y": 111
+                }, {
+                    "x": 299,
+                    "y": 108
+                }, {
+                    "x": 291,
+                    "y": 107
+                }, {
+                    "x": 287,
+                    "y": 105
+                }, {
+                    "x": 287,
+                    "y": 104
+                }, {
+                    "x": 292,
+                    "y": 102
+                }, {
+                    "x": 301,
+                    "y": 101
+                }, {
+                    "x": 314,
+                    "y": 101
+                }, {
+                    "x": 332,
+                    "y": 103
+                }, {
+                    "x": 353,
+                    "y": 109
+                }, {
+                    "x": 378,
+                    "y": 117
+                }, {
+                    "x": 405,
+                    "y": 125
+                }, {
+                    "x": 433,
+                    "y": 130
+                }, {
+                    "x": 461,
+                    "y": 132
+                }, {
+                    "x": 488,
+                    "y": 129
+                }, {
+                    "x": 509,
+                    "y": 123
+                }, {
+                    "x": 529,
+                    "y": 117
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 330,
+                    "y": 105
+                }, {
+                    "x": 351,
+                    "y": 103
+                }, {
+                    "x": 373,
+                    "y": 101
+                }, {
+                    "x": 399,
+                    "y": 98
+                }, {
+                    "x": 427,
+                    "y": 96
+                }, {
+                    "x": 454,
+                    "y": 96
+                }, {
+                    "x": 481,
+                    "y": 96
+                }, {
+                    "x": 505,
+                    "y": 97
+                }, {
+                    "x": 527,
+                    "y": 98
+                }, {
+                    "x": 545,
+                    "y": 99
+                }, {
+                    "x": 559,
+                    "y": 101
+                }, {
+                    "x": 567,
+                    "y": 101
+                }, {
+                    "x": 572,
+                    "y": 103
+                }, {
+                    "x": 573,
+                    "y": 104
+                }, {
+                    "x": 568,
+                    "y": 106
+                }, {
+                    "x": 560,
+                    "y": 108
+                }],
+                "memo": ""
+            },                  {
+                "feature_id": "FP_005",
+                "label": "4WD with low range transfer gear",
+                "description": "Shift the transfer lever to 4L when the going gets tough for maximum torque and traction. On flat off-roads enter 4H to enjoy 4WD traction and 2H (2WD) on paved roads for a smoother, quieter ride. ",
+                "thumbnail": ["thumbnails/FP_005.jpg"],
+                "visible": true,
+                "positions": [{
+                    "x": 542,
+                    "y": 348
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 259,
+                    "y": 314
+                }, {
+                    "x": 240,
+                    "y": 316
+                }, {
+                    "x": 224,
+                    "y": 319
+                }, {
+                    "x": 214,
+                    "y": 323
+                }, {
+                    "x": 209,
+                    "y": 326
+                }, {
+                    "x": 210,
+                    "y": 330
+                }, {
+                    "x": 218,
+                    "y": 335
+                }, {
+                    "x": 234,
+                    "y": 343
+                }, {
+                    "x": 257,
+                    "y": 355
+                }, {
+                    "x": 288,
+                    "y": 369
+                }, {
+                    "x": 324,
+                    "y": 384
+                }, {
+                    "x": 365,
+                    "y": 395
+                }, {
+                    "x": 410,
+                    "y": 402
+                }, {
+                    "x": 457,
+                    "y": 398
+                }, {
+                    "x": 503,
+                    "y": 387
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 256,
+                    "y": 306
+                }, {
+                    "x": 234,
+                    "y": 312
+                }, {
+                    "x": 217,
+                    "y": 317
+                }, {
+                    "x": 204,
+                    "y": 321
+                }, {
+                    "x": 196,
+                    "y": 325
+                }, {
+                    "x": 195,
+                    "y": 329
+                }, {
+                    "x": 202,
+                    "y": 333
+                }, {
+                    "x": 216,
+                    "y": 337
+                }, {
+                    "x": 238,
+                    "y": 341
+                }, {
+                    "x": 268,
+                    "y": 344
+                }, {
+                    "x": 304,
+                    "y": 346
+                }, {
+                    "x": 347,
+                    "y": 348
+                }, {
+                    "x": 395,
+                    "y": 349
+                }, {
+                    "x": 446,
+                    "y": 350
+                }, {
+                    "x": 496,
+                    "y": 348
+                }],
+                "memo": ""
+            },                  {
+                "feature_id": "FP_006",
+                "label": "Heritage Design",
+                "description": "Many design elements as the round headlamps and gathered rear combination lamps, were inherited from past legends, creating a familiar yet distinct Jimny look. ",
+                "thumbnail": ["thumbnails/FP_006.jpg"],
+                "visible": true,
+                "positions": [{
+                    "x": 339,
+                    "y": 237
+                }, {
+                    "x": 399,
+                    "y": 237
+                }, {
+                    "x": 461,
+                    "y": 237
+                }, {
+                    "x": 522,
+                    "y": 236
+                }, {
+                    "x": 578,
+                    "y": 236
+                }, {
+                    "x": 628,
+                    "y": 235
+                }, {
+                    "x": 669,
+                    "y": 234
+                }, {
+                    "x": 701,
+                    "y": 232
+                }, {
+                    "x": 722,
+                    "y": 232
+                }, {
+                    "x": 726,
+                    "y": 232
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 172,
+                    "y": 325
+                }, {
+                    "x": 206,
+                    "y": 346
+                }, {
+                    "x": 248,
+                    "y": 364
+                }, {
+                    "x": 298,
+                    "y": 377
+                }, {
+                    "x": 354,
+                    "y": 379
+                }, {
+                    "x": 417,
+                    "y": 370
+                }, {
+                    "x": 479,
+                    "y": 353
+                }, {
+                    "x": 538,
+                    "y": 337
+                }, {
+                    "x": 592,
+                    "y": 323
+                }, {
+                    "x": 641,
+                    "y": 312
+                }, {
+                    "x": 679,
+                    "y": 303
+                }, {
+                    "x": 705,
+                    "y": 297
+                }, {
+                    "x": 720,
+                    "y": 292
+                }, {
+                    "x": 726,
+                    "y": 288
+                }, {
+                    "x": 723,
+                    "y": 284
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 134,
+                    "y": 233
+                }, {
+                    "x": 130,
+                    "y": 231
+                }, {
+                    "x": 141,
+                    "y": 233
+                }, {
+                    "x": 167,
+                    "y": 234
+                }, {
+                    "x": 197,
+                    "y": 235
+                }, {
+                    "x": 235,
+                    "y": 236
+                }, {
+                    "x": 283,
+                    "y": 236
+                }],
+                "memo": ""
+            },                  {
+                "feature_id": "FP_007",
+                "label": "Ample body angles and clearance",
+                "description": "Push outdoor exploration to the limit with an ample departure angle (49°), ramp breakover angle (28°), approach angle (37°) and ground clearance (210mm) that let you handle off-road adventures.",
+                "thumbnail": ["thumbnails/FP_007.jpg"],
+                "visible": true,
+                "positions": [{
+                    "x": 365,
+                    "y": 356
+                }, {
+                    "x": 432,
+                    "y": 358
+                }, {
+                    "x": 498,
+                    "y": 356
+                }, {
+                    "x": 560,
+                    "y": 354
+                }, {
+                    "x": 617,
+                    "y": 348
+                }, {
+                    "x": 659,
+                    "y": 344
+                }, {
+                    "x": 696,
+                    "y": 338
+                }, {
+                    "x": 716,
+                    "y": 334
+                }, {
+                    "x": 724,
+                    "y": 330
+                }, {
+                    "x": 734,
+                    "y": 328
+                }, {
+                    "x": 743,
+                    "y": 324
+                }, {
+                    "x": 743,
+                    "y": 317
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 117,
+                    "y": 319
+                }, {
+                    "x": 117,
+                    "y": 324
+                }, {
+                    "x": 124,
+                    "y": 327
+                }, {
+                    "x": 129,
+                    "y": 329
+                }, {
+                    "x": 134,
+                    "y": 334
+                }, {
+                    "x": 165,
+                    "y": 338
+                }, {
+                    "x": 197,
+                    "y": 344
+                }, {
+                    "x": 244,
+                    "y": 349
+                }, {
+                    "x": 300,
+                    "y": 353
+                }],
+                "memo": ""
+            },                  {
+                "feature_id": "FP_008",
+                "label": "Fully flat luggage space",
+                "description": "The thoughtfully designed rear storage area can be expanded by folding the rear seats. Flat all the way across, it allows crosswise storage of wide items.",
+                "thumbnail": ["thumbnails/FP_008.jpg"],
+                "visible": true,
+                "positions": [{
+                    "x": 0,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": 213,
+                    "y": 259
+                }, {
+                    "x": 253,
+                    "y": 275
+                }, {
+                    "x": 299,
+                    "y": 284
+                }, {
+                    "x": 349,
+                    "y": 283
+                }, {
+                    "x": 241,
+                    "y": 265
+                }, {
+                    "x": 287,
+                    "y": 258
+                }, {
+                    "x": 339,
+                    "y": 248
+                }, {
+                    "x": 396,
+                    "y": 239
+                }, {
+                    "x": 454,
+                    "y": 231
+                }, {
+                    "x": 512,
+                    "y": 226
+                }, {
+                    "x": 565,
+                    "y": 221
+                }, {
+                    "x": 611,
+                    "y": 218
+                }, {
+                    "x": 650,
+                    "y": 217
+                }, {
+                    "x": 679,
+                    "y": 216
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }, {
+                    "x": null,
+                    "y": null
+                }],
+                "memo": ""
+            }]        
+        }        
+        $(document).ready(get_36_Image(EXT_E));        
+        $("#exteriorStage").on("mousedown touchstart", function(e) {            
+            $(this).on("mousemove touchmove", function(e) {                
+                if (e.originalEvent.touches[0].clientX > mX && e.originalEvent.touches[0].clientY == mY) {                    
+                    rightpoint++                    
+                    if (rightpoint >= 36) {                        
+                        rightpoint = 0                    
+                    }                
+                    document.getElementsByClassName(`angle${visibleImage}`)[0].style.visibility = 'hidden';
+                    visibleImage = rightpoint;                    
+                    document.getElementsByClassName(`angle${rightpoint}`)[0].style.visibility = "visible";
+                }                
+                else if (e.originalEvent.touches[0].clientX == mX && e.originalEvent.touches[0].clientY > mY) {                    
+                    rightpoint--                    
+                    if (rightpoint < 0) {                        
+                        rightpoint = 35                    
+                    }                    
+                    document.getElementsByClassName(`angle${visibleImage}`)[0].style.visibility = 'hidden';
+                    visibleImage = rightpoint;                    
+                    document.getElementsByClassName(`angle${rightpoint}`)[0].style.visibility = "visible";
+                }                
+                else if (e.originalEvent.touches[0].clientX == mX && e.originalEvent.touches[0].clientY < mY) {                    
+                    rightpoint++                    
+                    if (rightpoint >= 36) {                        
+                        rightpoint = 0                    
+                    }                 
+                    document.getElementsByClassName(`angle${visibleImage}`)[0].style.visibility = 'hidden';
+                    visibleImage = rightpoint;                    
+                    document.getElementsByClassName(`angle${rightpoint}`)[0].style.visibility = "visible";
+                }                
+                else if (e.originalEvent.touches[0].clientX < mX && e.originalEvent.touches[0].clientY == mY) {                    
+                    rightpoint--                    
+                    if (rightpoint < 0) {                        
+                        rightpoint = 35                    
+                    }   
+                    document.getElementsByClassName(`angle${visibleImage}`)[0].style.visibility = 'hidden';
+                    visibleImage = rightpoint;                    
+                    document.getElementsByClassName(`angle${rightpoint}`)[0].style.visibility = "visible";
+                }                
+                mX = e.originalEvent.touches[0].clientX;                
+                mY = e.originalEvent.touches[0].clientY;                
+                if (receivedArray.HOTSPOT) {                    
+                    for (let rightpoint = 0; rightpoint < receivedArray.HOTSPOT.length; rightpoint++) {                        
+                        axis = receivedArray.HOTSPOT[rightpoint].positions[visibleImage];                        
+                        if (axis.x == null || axis.y == null || axis.x == 0 || axis.y == 0) {                            
+                            document.getElementById(`FP_00${rightpoint + 1}`).style.display = "none";
+                            document.getElementById(`FP_00${rightpoint + 1}`).style.left = "0px";
+                            document.getElementById(`FP_00${rightpoint + 1}`).style.top = "0px";
+                        } else {                            
+                            document.getElementById(`FP_00${rightpoint + 1}`).style.display = "block";
+                            document.getElementById(`FP_00${rightpoint + 1}`).style.left = axis.x.toString() + "px";                            
+                            document.getElementById(`FP_00${rightpoint + 1}`).style.top = axis.y.toString() + "px";                        
+                        }                    
+                    }                
+                }            
+            });        
+        })        
+        $('#exteriorStage').on("mouseup touchend", function(e) {            
+            $(this).off("mousemove");        
+        });        
+        $("#func-point")        
+        function opendialog(params) {            
+            document.querySelector("#descriptions" + params).style.display = "";            
+            document.querySelector("#img" + params).style.display = "block";        
+        }        
+        function closedialog(params) {            
+            document.querySelector("#descriptions" + params).style.display = "none";            
+            document.querySelector("#img" + params).style.display = "none";        
+        }
+
+                
+        function get_36_Image(params) {            
+            document.getElementById('exteriorStage').style.display = 'block';            
+            document.getElementById('func-point').style.visibility = '';            
+            // params = JSON.parse(params)
+            receivedArray = params;            
+            if (params.EXT_GRD) {                
+                for (let rightpoint = 0; rightpoint < params.EXT_GRD.length; rightpoint++) {                    
+                    let EXT_GRD = document.getElementsByClassName(`angle` + rightpoint)[0].querySelector(".layer0");                    
+                    EXT_GRD.src = params.EXT_GRD[rightpoint];                    
+                    EXT_GRD.setAttribute("id", `${rightpoint}-EXT_GRD`);                
+                }            
+            }            
+            if (params.EXT_WH) {                
+                for (let rightpoint = 0; rightpoint < params.EXT_WH.length; rightpoint++) {                    
+                    let EXT_WH = document.getElementsByClassName(`angle` + rightpoint)[0].querySelector(".layer1");                    
+                    EXT_WH.src = params.EXT_WH[rightpoint];                    
+                    EXT_WH.setAttribute("id", `${rightpoint}-EXT_WH`);                
+                }            
+            }            
+            if (params.HOTSPOT) {                
+                for (let rightpoint = 0; rightpoint < params.HOTSPOT.length; rightpoint++) {                    
+                    positionHotspot(params.HOTSPOT[rightpoint])                
+                }            
+            }            
+            iterator = Object.keys(params);            
+            for (let index = 0; index < iterator.length; index++) {                
+                let i = 1;                
+                if (iterator[index] == 'HOTSPOT') {} else                     if (iterator[index] == 'EXT_GRD') {} else                         if (iterator[index] == 'EXT_WH') {} else {                            
+                    for (let index2 = 0; index2 < 36; index2++) {                                
+                        var imgTag = document.createElement('img');                                
+                        imgTag.className = 'drawTarget layer' + (index + 2);                                
+                        imgTag.draggable = false;                                
+                        let angle = document.getElementsByClassName(`angle` + index2)[0];                                
+                        angle.appendChild(imgTag);                                
+                        let ACC = document.getElementsByClassName(`angle` + index2)[0].querySelector(".layer" + (index + 2));                                
+                        ACC.src = params['ACC' + i][index2];                                
+                        ACC.setAttribute("id", `${index2}-ACC`);                            
+                    }                        
+                }                
+                i++            
+            }
+        }   
+        function positionHotspot(params) {            
+            var iDiv = document.createElement('span');            
+            iDiv.id = params.feature_id;            
+            iDiv.style = "";            
+            document.getElementById('fp-positions').appendChild(iDiv);
+            var descBlock = document.createElement('div');            
+            descBlock.id = 'descriptions' + params.feature_id;            
+            descBlock.className = 'description';            
+            descBlock.style = "";            
+            let closebtn = document.createElement('p');            
+            closebtn.className = 'fp-closeBtn';            
+            descBlock.appendChild(closebtn);            
+            closebtn.ontouchend = closedialog.bind(closebtn, params.feature_id);
+            var imgDiv = document.createElement('div');            
+            imgDiv.className = 'fp-thumb';            
+            var imgDesc = document.createElement('img');            
+            imgDesc.id = 'img' + params.feature_id;            
+            imgDesc.style = "";            
+            imgDesc.src = params.thumbnail;            
+            imgDiv.appendChild(imgDesc);
+            var headDiv = document.createElement('p');            
+            headDiv.className = 'fp-label';            
+            headDiv.innerHTML = params.label;
+            var DescDiv = document.createElement('p');            
+            DescDiv.className = 'fp-description';            
+            DescDiv.innerHTML = params.description;
+            descBlock.appendChild(imgDiv);            
+            descBlock.appendChild(headDiv);            
+            descBlock.appendChild(DescDiv);            
+            document.getElementById('fp-descriptions').appendChild(descBlock);            
+            descBlock.style.display = 'none';            
+            iDiv.ontouchend = opendialog.bind(iDiv, params.feature_id);            
+            positionHotspotFunction(params);
+        }
+
+        function positionHotspotFunction(params) {            
+            for (i = 0; i < params.positions.length; i++) {                
+                axis = params.positions[i];                
+                if (axis.x == null || axis.y == null || axis.x == 0 || axis.y == 0) {                    
+                    document.getElementById(params.feature_id).style.display = "none";                    
+                    document.getElementById(params.feature_id).style.left = "0px";                    
+                    document.getElementById(params.feature_id).style.top = "0px";                
+                } else {                    
+                    document.getElementById(params.feature_id).style.display = "block";                    
+                    document.getElementById(params.feature_id).style.left = axis.x.toString() + "px";
+                    document.getElementById(params.feature_id).style.top = axis.y.toString() + "px";
+                }            
+            }        
+        }      
+        function get_Interior(params) {            
+            params = JSON.parse(params);            
+            document.getElementById('exteriorStage').style.display = 'none';            
+            document.getElementById('func-point').style.visibility = 'hidden';            
+            if (params.interiorImages) {                
+                let path = params.interiorImages;                
+                panorama = new PANOLENS.CubePanorama([path[0], path[1], path[2], path[3], path[4], path[5]]);
+                viewer = new PANOLENS.Viewer();                
+                viewer.add(panorama);            
+            }            
+            if (params.interiorHotspot) {                
+                for (let index = 0; index < params.interiorHotspot.length; index++) {                    
+                    positionIntHotspot(params.interiorHotspot[index]);
+                }            
+            }        
+        } 
+        function positionIntHotspot(params) {            
+            var featureId = document.createElement('div');            
+            featureId.id = params.feature_id;            
+            featureId.style.width = '300px';            
+            featureId.style.maxWidth = '500px';            
+            featureId.style.maxHeight = '500px';            
+            featureId.style.minHeight = '200px';            
+            featureId.style.minWidth = '250px';            
+            featureId.style.overflow = 'auto';            
+            featureId.style.background = 'white';            
+            featureId.style.padding = '10px';            
+            featureId.style.display = 'block';            
+            featureId.style.textAlign = 'center'            
+            var imgDesc = document.createElement('img');            
+            imgDesc.src = params.thumbnail;            
+            imgDesc.style.maxHeight = '300px';            
+            imgDesc.style.maxWidth = '300px'            
+            var lableDiv = document.createElement('div');            
+            lableDiv.className = 'product-name';            
+            lableDiv.innerHTML = params.label;            
+            lableDiv.style.textAlign = 'left';            
+            lableDiv.style.fontSize = '20px';            
+            lableDiv.style.fontWeight = '700';            
+            var descDiv = document.createElement('div');            
+            descDiv.className = '';            
+            descDiv.className = 'product-name';            
+            descDiv.innerHTML = params.description;            
+            descDiv.style.textAlign = 'left';            
+            document.getElementById('chair-container').appendChild(featureId);            
+            featureId.appendChild(imgDesc);            
+            featureId.appendChild(lableDiv);            
+            featureId.appendChild(descDiv);            
+            console.log(document.getElementById('chair-container'));            
+            addInfospots(params);        
+        }     
+        function addInfospots(params) {            
+            var infospot = new PANOLENS.Infospot(1, PANOLENS.DataImage.Info);            
+            infospot.position.set(params.positions[0].x, params.positions[0].y, params.positions[0].z);            
+            infospot.addHoverElement(document.getElementById(params.feature_id), 280);            
+            panorama.add(infospot);        
+        }
+    </script>
+</body>
+
+</html>
