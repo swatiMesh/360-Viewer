@@ -90,8 +90,12 @@
             margin: 0;
             padding: 0;
             /* height: 100% !important;
-                        width: 100% !important; */
+            width: 100% !important; */
             overflow: hidden;
+            left: 0px;
+            top: 0px;
+            border: 0px;
+            right: 0px;
         }
         
         #func-point {
@@ -284,31 +288,64 @@
         let receivedArray = [];        
         var panorama, viewer, dae, path, format, loader, pointlight, intersect, infospots;        
         let EXT_E = {            
-            "EXT_GRD": ["materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_01.jpg",             "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_02.jpg",             "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_03.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_04.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_05.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_06.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_07.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_08.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_09.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_10.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_11.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_12.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_13.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_14.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_15.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_16.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_17.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_18.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_19.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_20.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_21.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_22.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_23.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_24.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_25.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_26.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_27.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_28.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_29.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_30.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_31.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_32.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_33.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_34.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_35.jpg",                 "materials/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_36.jpg"            ],
-            "EXT_WH": [                
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_01.png",                 
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_02.png",                 
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_03.png",                 
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_04.png",                 
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_05.png",                 
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_06.png",                 
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_07.png",                 
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_08.png",                 
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_09.png",                 
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_10.png",                 
-                "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_11.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_12.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_13.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_14.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_15.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_16.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_17.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_18.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_19.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_20.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_21.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_22.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_23.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_24.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_25.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_26.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_27.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_28.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_29.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_30.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_31.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_32.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_33.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_34.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_35.png",                 "materials/EXT-WH_002-BG_A/EXT-WH_002-BG_A_36.png"            
+            "EXT_GRD": [
+                "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_01.jpg",             
+                "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_02.jpg",             
+                "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_03.jpg",         
+                "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_04.jpg",
+                "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_05.jpg",
+                "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_06.jpg",
+                "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_07.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_08.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_09.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_10.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_11.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_12.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_13.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_14.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_15.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_16.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_17.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_18.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_19.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_20.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_21.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_22.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_23.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_24.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_25.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_26.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_27.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_28.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_29.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_30.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_31.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_32.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_33.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_34.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_35.jpg", "assets/EXT-GRD_GLX-BG_A-BC_DG52_R/EXT-GRD_GLX-BG_A-BC_DG52_R_36.jpg"            
             ],
-            "ACC1": [                
-                "materials/EXT-G_001/EXT-G_001_01.png",                 "materials/EXT-G_001/EXT-G_001_02.png",                 "materials/EXT-G_001/EXT-G_001_03.png",                 "materials/EXT-G_001/EXT-G_001_04.png",                 "materials/EXT-G_001/EXT-G_001_05.png",                 "materials/EXT-G_001/EXT-G_001_06.png",                 "materials/EXT-G_001/EXT-G_001_07.png",                 "materials/EXT-G_001/EXT-G_001_08.png",                 "materials/EXT-G_001/EXT-G_001_09.png",                 "materials/EXT-G_001/EXT-G_001_10.png",                 "materials/EXT-G_001/EXT-G_001_11.png",                 "materials/EXT-G_001/EXT-G_001_12.png",                 "materials/EXT-G_001/EXT-G_001_13.png",                 "materials/EXT-G_001/EXT-G_001_14.png",                 "materials/EXT-G_001/EXT-G_001_15.png",                 "materials/EXT-G_001/EXT-G_001_16.png",                 "materials/EXT-G_001/EXT-G_001_17.png",                 "materials/EXT-G_001/EXT-G_001_18.png",                 "materials/EXT-G_001/EXT-G_001_19.png",                 "materials/EXT-G_001/EXT-G_001_20.png",                 "materials/EXT-G_001/EXT-G_001_21.png",                 "materials/EXT-G_001/EXT-G_001_22.png",                 "materials/EXT-G_001/EXT-G_001_23.png",                 "materials/EXT-G_001/EXT-G_001_24.png",                 "materials/EXT-G_001/EXT-G_001_25.png",                 "materials/EXT-G_001/EXT-G_001_26.png",                 "materials/EXT-G_001/EXT-G_001_27.png",                 "materials/EXT-G_001/EXT-G_001_28.png",                 "materials/EXT-G_001/EXT-G_001_29.png",                 "materials/EXT-G_001/EXT-G_001_30.png",                 "materials/EXT-G_001/EXT-G_001_31.png",                 "materials/EXT-G_001/EXT-G_001_32.png",                 "materials/EXT-G_001/EXT-G_001_33.png",                 "materials/EXT-G_001/EXT-G_001_34.png",                 "materials/EXT-G_001/EXT-G_001_35.png",                 "materials/EXT-G_001/EXT-G_001_36.png",             
+            "EXT_WH": [
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_01.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_02.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_03.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_04.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_05.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_06.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_07.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_08.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_09.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_10.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_11.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_12.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_13.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_14.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_15.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_16.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_17.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_18.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_19.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_20.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_21.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_22.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_23.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_24.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_25.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_26.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_27.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_28.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_29.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_30.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_31.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_32.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_33.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_34.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_35.png",
+                "assets/EXT-WH_002-BG_A/EXT-WH_002-BG_A_36.png"            
             ],
-                        "ACC2": [                
-                "materials/EXT-G_001/EXT-G_001_01.png",                 "materials/EXT-G_001/EXT-G_001_02.png",                 "materials/EXT-G_001/EXT-G_001_03.png",                 "materials/EXT-G_001/EXT-G_001_04.png",                 "materials/EXT-G_001/EXT-G_001_05.png",                 "materials/EXT-G_001/EXT-G_001_06.png",                 "materials/EXT-G_001/EXT-G_001_07.png",                 "materials/EXT-G_001/EXT-G_001_08.png",                 "materials/EXT-G_001/EXT-G_001_09.png",                 "materials/EXT-G_001/EXT-G_001_10.png",                 "materials/EXT-G_001/EXT-G_001_11.png",                 "materials/EXT-G_001/EXT-G_001_12.png",                 "materials/EXT-G_001/EXT-G_001_13.png",                 "materials/EXT-G_001/EXT-G_001_14.png",                 "materials/EXT-G_001/EXT-G_001_15.png",                 "materials/EXT-G_001/EXT-G_001_16.png",                 "materials/EXT-G_001/EXT-G_001_17.png",                 "materials/EXT-G_001/EXT-G_001_18.png",                 "materials/EXT-G_001/EXT-G_001_19.png",                 "materials/EXT-G_001/EXT-G_001_20.png",                 "materials/EXT-G_001/EXT-G_001_21.png",                 "materials/EXT-G_001/EXT-G_001_22.png",                 "materials/EXT-G_001/EXT-G_001_23.png",                 "materials/EXT-G_001/EXT-G_001_24.png",                 "materials/EXT-G_001/EXT-G_001_25.png",                 "materials/EXT-G_001/EXT-G_001_26.png",                 "materials/EXT-G_001/EXT-G_001_27.png",                 "materials/EXT-G_001/EXT-G_001_28.png",                 "materials/EXT-G_001/EXT-G_001_29.png",                 "materials/EXT-G_001/EXT-G_001_30.png",                 "materials/EXT-G_001/EXT-G_001_31.png",                 "materials/EXT-G_001/EXT-G_001_32.png",                 "materials/EXT-G_001/EXT-G_001_33.png",                 "materials/EXT-G_001/EXT-G_001_34.png",                 "materials/EXT-G_001/EXT-G_001_35.png",                 "materials/EXT-G_001/EXT-G_001_36.png",             
+            "ACC1": [
+                "assets/EXT-G_001/EXT-G_001_01.png", "assets/EXT-G_001/EXT-G_001_02.png", "assets/EXT-G_001/EXT-G_001_03.png", "assets/EXT-G_001/EXT-G_001_04.png", "assets/EXT-G_001/EXT-G_001_05.png", "assets/EXT-G_001/EXT-G_001_06.png", "assets/EXT-G_001/EXT-G_001_07.png", "assets/EXT-G_001/EXT-G_001_08.png", "assets/EXT-G_001/EXT-G_001_09.png", "assets/EXT-G_001/EXT-G_001_10.png", "assets/EXT-G_001/EXT-G_001_11.png", "assets/EXT-G_001/EXT-G_001_12.png", "assets/EXT-G_001/EXT-G_001_13.png", "assets/EXT-G_001/EXT-G_001_14.png", "assets/EXT-G_001/EXT-G_001_15.png", "assets/EXT-G_001/EXT-G_001_16.png", "assets/EXT-G_001/EXT-G_001_17.png", "assets/EXT-G_001/EXT-G_001_18.png", "assets/EXT-G_001/EXT-G_001_19.png", "assets/EXT-G_001/EXT-G_001_20.png", "assets/EXT-G_001/EXT-G_001_21.png", "assets/EXT-G_001/EXT-G_001_22.png", "assets/EXT-G_001/EXT-G_001_23.png", "assets/EXT-G_001/EXT-G_001_24.png", "assets/EXT-G_001/EXT-G_001_25.png", "assets/EXT-G_001/EXT-G_001_26.png", "assets/EXT-G_001/EXT-G_001_27.png", "assets/EXT-G_001/EXT-G_001_28.png", "assets/EXT-G_001/EXT-G_001_29.png", "assets/EXT-G_001/EXT-G_001_30.png", "assets/EXT-G_001/EXT-G_001_31.png", "assets/EXT-G_001/EXT-G_001_32.png", "assets/EXT-G_001/EXT-G_001_33.png", "assets/EXT-G_001/EXT-G_001_34.png", "assets/EXT-G_001/EXT-G_001_35.png", "assets/EXT-G_001/EXT-G_001_36.png",             
             ],
-                        "HOTSPOT": [                {
+                        "ACC2": [
+                "assets/EXT-G_001/EXT-G_001_01.png", "assets/EXT-G_001/EXT-G_001_02.png", "assets/EXT-G_001/EXT-G_001_03.png", "assets/EXT-G_001/EXT-G_001_04.png", "assets/EXT-G_001/EXT-G_001_05.png", "assets/EXT-G_001/EXT-G_001_06.png", "assets/EXT-G_001/EXT-G_001_07.png", "assets/EXT-G_001/EXT-G_001_08.png", "assets/EXT-G_001/EXT-G_001_09.png", "assets/EXT-G_001/EXT-G_001_10.png", "assets/EXT-G_001/EXT-G_001_11.png", "assets/EXT-G_001/EXT-G_001_12.png", "assets/EXT-G_001/EXT-G_001_13.png", "assets/EXT-G_001/EXT-G_001_14.png", "assets/EXT-G_001/EXT-G_001_15.png", "assets/EXT-G_001/EXT-G_001_16.png", "assets/EXT-G_001/EXT-G_001_17.png", "assets/EXT-G_001/EXT-G_001_18.png", "assets/EXT-G_001/EXT-G_001_19.png", "assets/EXT-G_001/EXT-G_001_20.png", "assets/EXT-G_001/EXT-G_001_21.png", "assets/EXT-G_001/EXT-G_001_22.png", "assets/EXT-G_001/EXT-G_001_23.png", "assets/EXT-G_001/EXT-G_001_24.png", "assets/EXT-G_001/EXT-G_001_25.png", "assets/EXT-G_001/EXT-G_001_26.png", "assets/EXT-G_001/EXT-G_001_27.png", "assets/EXT-G_001/EXT-G_001_28.png", "assets/EXT-G_001/EXT-G_001_29.png", "assets/EXT-G_001/EXT-G_001_30.png", "assets/EXT-G_001/EXT-G_001_31.png", "assets/EXT-G_001/EXT-G_001_32.png", "assets/EXT-G_001/EXT-G_001_33.png", "assets/EXT-G_001/EXT-G_001_34.png", "assets/EXT-G_001/EXT-G_001_35.png", "assets/EXT-G_001/EXT-G_001_36.png",             
+            ],
+                        "HOTSPOT": [{
                 "feature_id": "FP_001",
                 "label": "Rigid ladder frame",
                 "description": "From the very first generation, the Jimny has always featured a ladder frame that offers a solid foundation for serious off-road performance.",
-                "thumbnail": ["thumbnails/FP_001.jpg"],
+                "thumbnail": ["assets/thumbnails/FP_001.jpg"],
                 "visible": true,
                 "positions": [{
                     "x": 559,
@@ -420,11 +457,11 @@
                     "y": 320
                 }],
                 "memo": ""
-            },                  {
+            }, {
                 "feature_id": "FP_002",
                 "label": "3-link rigid axle suspension with coil spring",
                 "description": "Full-width rigid axles equipped in both the front and rear. When an obstacle pushes one wheel up, the axle presses the other wheel down to increase tyre contact in rough road conditions.",
-                "thumbnail": ["thumbnails/FP_002.jpg"],
+                "thumbnail": ["assets/thumbnails/FP_002.jpg"],
                 "visible": true,
                 "positions": [{
                     "x": 576,
@@ -536,11 +573,11 @@
                     "y": 302
                 }],
                 "memo": ""
-            },                  {
+            }, {
                 "feature_id": "FP_003",
                 "label": "1.5 litre engine",
                 "description": "The robust 1.5L engine generates strong torque throughout a wide rpm range for powerful off-road performance. Small and lightweight, it also delivers high fuel efficiency.",
-                "thumbnail": ["thumbnails/FP_003.jpg"],
+                "thumbnail": ["assets/thumbnails/FP_003.jpg"],
                 "visible": true,
                 "positions": [{
                     "x": 395,
@@ -652,11 +689,11 @@
                     "y": 191
                 }],
                 "memo": ""
-            },                  {
+            }, {
                 "feature_id": "FP_004",
                 "label": "Practical drip rail",
                 "description": "The drip rail can keep your head dry and your spirits bright when entering and exiting by helping to prevent water from dripping off the roof.",
-                "thumbnail": ["thumbnails/FP_004.jpg"],
+                "thumbnail": ["assets/thumbnails/FP_004.jpg"],
                 "visible": true,
                 "positions": [{
                     "x": 549,
@@ -768,11 +805,11 @@
                     "y": 108
                 }],
                 "memo": ""
-            },                  {
+            }, {
                 "feature_id": "FP_005",
                 "label": "4WD with low range transfer gear",
                 "description": "Shift the transfer lever to 4L when the going gets tough for maximum torque and traction. On flat off-roads enter 4H to enjoy 4WD traction and 2H (2WD) on paved roads for a smoother, quieter ride. ",
-                "thumbnail": ["thumbnails/FP_005.jpg"],
+                "thumbnail": ["assets/thumbnails/FP_005.jpg"],
                 "visible": true,
                 "positions": [{
                     "x": 542,
@@ -884,11 +921,11 @@
                     "y": 348
                 }],
                 "memo": ""
-            },                  {
+            }, {
                 "feature_id": "FP_006",
                 "label": "Heritage Design",
                 "description": "Many design elements as the round headlamps and gathered rear combination lamps, were inherited from past legends, creating a familiar yet distinct Jimny look. ",
-                "thumbnail": ["thumbnails/FP_006.jpg"],
+                "thumbnail": ["assets/thumbnails/FP_006.jpg"],
                 "visible": true,
                 "positions": [{
                     "x": 339,
@@ -1000,11 +1037,11 @@
                     "y": 236
                 }],
                 "memo": ""
-            },                  {
+            }, {
                 "feature_id": "FP_007",
                 "label": "Ample body angles and clearance",
                 "description": "Push outdoor exploration to the limit with an ample departure angle (49°), ramp breakover angle (28°), approach angle (37°) and ground clearance (210mm) that let you handle off-road adventures.",
-                "thumbnail": ["thumbnails/FP_007.jpg"],
+                "thumbnail": ["assets/thumbnails/FP_007.jpg"],
                 "visible": true,
                 "positions": [{
                     "x": 365,
@@ -1116,11 +1153,11 @@
                     "y": 353
                 }],
                 "memo": ""
-            },                  {
+            }, {
                 "feature_id": "FP_008",
                 "label": "Fully flat luggage space",
                 "description": "The thoughtfully designed rear storage area can be expanded by folding the rear seats. Flat all the way across, it allows crosswise storage of wide items.",
-                "thumbnail": ["thumbnails/FP_008.jpg"],
+                "thumbnail": ["assets/thumbnails/FP_008.jpg"],
                 "visible": true,
                 "positions": [{
                     "x": 0,
@@ -1235,118 +1272,101 @@
             }]        
         }        
         $(document).ready(get_36_Image(EXT_E));        
-        $("#exteriorStage").on("mousedown touchstart", function(e) {            
-            $(this).on("mousemove touchmove", function(e) {                
-                if (e.originalEvent.touches[0].clientX > mX && e.originalEvent.touches[0].clientY == mY) {                    
-                    rightpoint++                    
-                    if (rightpoint >= 36) {                        
-                        rightpoint = 0                    
-                    }                
-                    document.getElementsByClassName(`angle${visibleImage}`)[0].style.visibility = 'hidden';
-                    visibleImage = rightpoint;                    
-                    document.getElementsByClassName(`angle${rightpoint}`)[0].style.visibility = "visible";
-                }                
-                else if (e.originalEvent.touches[0].clientX == mX && e.originalEvent.touches[0].clientY > mY) {                    
-                    rightpoint--                    
-                    if (rightpoint < 0) {                        
-                        rightpoint = 35                    
-                    }                    
-                    document.getElementsByClassName(`angle${visibleImage}`)[0].style.visibility = 'hidden';
-                    visibleImage = rightpoint;                    
-                    document.getElementsByClassName(`angle${rightpoint}`)[0].style.visibility = "visible";
-                }                
-                else if (e.originalEvent.touches[0].clientX == mX && e.originalEvent.touches[0].clientY < mY) {                    
-                    rightpoint++                    
-                    if (rightpoint >= 36) {                        
-                        rightpoint = 0                    
-                    }                 
-                    document.getElementsByClassName(`angle${visibleImage}`)[0].style.visibility = 'hidden';
-                    visibleImage = rightpoint;                    
-                    document.getElementsByClassName(`angle${rightpoint}`)[0].style.visibility = "visible";
-                }                
-                else if (e.originalEvent.touches[0].clientX < mX && e.originalEvent.touches[0].clientY == mY) {                    
-                    rightpoint--                    
-                    if (rightpoint < 0) {                        
-                        rightpoint = 35                    
-                    }   
-                    document.getElementsByClassName(`angle${visibleImage}`)[0].style.visibility = 'hidden';
-                    visibleImage = rightpoint;                    
-                    document.getElementsByClassName(`angle${rightpoint}`)[0].style.visibility = "visible";
-                }                
-                mX = e.originalEvent.touches[0].clientX;                
-                mY = e.originalEvent.touches[0].clientY;                
-                if (receivedArray.HOTSPOT) {                    
-                    for (let rightpoint = 0; rightpoint < receivedArray.HOTSPOT.length; rightpoint++) {                        
-                        axis = receivedArray.HOTSPOT[rightpoint].positions[visibleImage];                        
-                        if (axis.x == null || axis.y == null || axis.x == 0 || axis.y == 0) {                            
-                            document.getElementById(`FP_00${rightpoint + 1}`).style.display = "none";
-                            document.getElementById(`FP_00${rightpoint + 1}`).style.left = "0px";
-                            document.getElementById(`FP_00${rightpoint + 1}`).style.top = "0px";
-                        } else {                            
-                            document.getElementById(`FP_00${rightpoint + 1}`).style.display = "block";
-                            document.getElementById(`FP_00${rightpoint + 1}`).style.left = axis.x.toString() + "px";                            
-                            document.getElementById(`FP_00${rightpoint + 1}`).style.top = axis.y.toString() + "px";                        
-                        }                    
-                    }                
-                }            
+        $("#exteriorStage").on("mousedown", function(e) {            
+                $(this).on("mousemove", function(e) {
+                    if (e.pageX < mY) {    
+                        rightpoint--    
+                        if (rightpoint < 0) {        
+                            rightpoint = 35    
+                        }
+                        document.getElementsByClassName(`angle${visibleImage}`)[0].style.visibility = 'hidden';
+                        visibleImage = rightpoint;    
+                        document.getElementsByClassName(`angle${rightpoint}`)[0].style.visibility = "visible";
+                    } else {    
+                        rightpoint++   
+                        if (rightpoint >= 36) {        
+                            rightpoint = 0    
+                        }    
+                        document.getElementsByClassName(`angle${visibleImage}`)[0].style.visibility = 'hidden';
+                        visibleImage = rightpoint;    
+                        document.getElementsByClassName(`angle${rightpoint}`)[0].style.visibility = "visible";
+                    }
+                    mY = e.pageX;
+                    if (receivedArray.HOTSPOT) {    
+                        for (let rightpoint = 0; rightpoint < receivedArray.HOTSPOT.length; rightpoint++) {        
+                            axis = receivedArray.HOTSPOT[rightpoint].positions[visibleImage];        
+                            if (axis.x == null || axis.y == null || axis.x == 0 || axis.y == 0) {            
+                                document.getElementById(`FP_00${rightpoint + 1}`).style.display = "none";
+                                document.getElementById(`FP_00${rightpoint + 1}`).style.left = "0px";
+                                document.getElementById(`FP_00${rightpoint + 1}`).style.top = "0px";
+                            } else {            
+                                document.getElementById(`FP_00${rightpoint + 1}`).style.display = "block";
+                                document.getElementById(`FP_00${rightpoint + 1}`).style.left = axis.x.toString() + "px";            
+                                document.getElementById(`FP_00${rightpoint + 1}`).style.top = axis.y.toString() + "px";        
+                            }    
+                        }
+                    }            
+                })       
+            })        
+            .mouseup(function(e) {            
+                $(this).off("mousemove");        
             });        
-        })        
-        $('#exteriorStage').on("mouseup touchend", function(e) {            
-            $(this).off("mousemove");        
-        });        
         $("#func-point")        
-        function opendialog(params) {            
-            document.querySelector("#descriptions" + params).style.display = "";            
-            document.querySelector("#img" + params).style.display = "block";        
+        function opendialog(params) {       
+            document.querySelector("#descriptions" + params.srcElement.id).style.display = "";            
+            document.querySelector("#img" + params.srcElement.id).style.display = "block";        
         }        
-        function closedialog(params) {            
-            document.querySelector("#descriptions" + params).style.display = "none";            
-            document.querySelector("#img" + params).style.display = "none";        
+        function closedialog(params) {
+            document.getElementById(params.path[1].id).style.display = 'none'            
+                // document.querySelector("#descriptions" + params.srcElement.id).style.display = "none";
+                // document.querySelector("#img" + params.srcElement.id).style.display = "none";        
         }
 
-                
         function get_36_Image(params) {            
             document.getElementById('exteriorStage').style.display = 'block';            
             document.getElementById('func-point').style.visibility = '';            
             // params = JSON.parse(params)
             receivedArray = params;            
-            if (params.EXT_GRD) {                
-                for (let rightpoint = 0; rightpoint < params.EXT_GRD.length; rightpoint++) {                    
-                    let EXT_GRD = document.getElementsByClassName(`angle` + rightpoint)[0].querySelector(".layer0");                    
-                    EXT_GRD.src = params.EXT_GRD[rightpoint];                    
-                    EXT_GRD.setAttribute("id", `${rightpoint}-EXT_GRD`);                
+            if (params.EXT_GRD) {
+                for (let rightpoint = 0; rightpoint < params.EXT_GRD.length; rightpoint++) {    
+                    let EXT_GRD = document.getElementsByClassName(`angle` + rightpoint)[0].querySelector(".layer0");    
+                    EXT_GRD.src = params.EXT_GRD[rightpoint];    
+                    EXT_GRD.setAttribute("id", `${rightpoint}-EXT_GRD`);
                 }            
             }            
-            if (params.EXT_WH) {                
-                for (let rightpoint = 0; rightpoint < params.EXT_WH.length; rightpoint++) {                    
-                    let EXT_WH = document.getElementsByClassName(`angle` + rightpoint)[0].querySelector(".layer1");                    
-                    EXT_WH.src = params.EXT_WH[rightpoint];                    
-                    EXT_WH.setAttribute("id", `${rightpoint}-EXT_WH`);                
+            if (params.EXT_WH) {
+                for (let rightpoint = 0; rightpoint < params.EXT_WH.length; rightpoint++) {    
+                    let EXT_WH = document.getElementsByClassName(`angle` + rightpoint)[0].querySelector(".layer1");    
+                    EXT_WH.src = params.EXT_WH[rightpoint];    
+                    EXT_WH.setAttribute("id", `${rightpoint}-EXT_WH`);
                 }            
             }            
-            if (params.HOTSPOT) {                
-                for (let rightpoint = 0; rightpoint < params.HOTSPOT.length; rightpoint++) {                    
-                    positionHotspot(params.HOTSPOT[rightpoint])                
+            if (params.HOTSPOT) {
+                for (let rightpoint = 0; rightpoint < params.HOTSPOT.length; rightpoint++) {    
+                    positionHotspot(params.HOTSPOT[rightpoint])
                 }            
             }            
-            iterator = Object.keys(params);            
-            for (let index = 0; index < iterator.length; index++) {                
-                let i = 1;                
-                if (iterator[index] == 'HOTSPOT') {} else                     if (iterator[index] == 'EXT_GRD') {} else                         if (iterator[index] == 'EXT_WH') {} else {                            
-                    for (let index2 = 0; index2 < 36; index2++) {                                
-                        var imgTag = document.createElement('img');                                
-                        imgTag.className = 'drawTarget layer' + (index + 2);                                
-                        imgTag.draggable = false;                                
-                        let angle = document.getElementsByClassName(`angle` + index2)[0];                                
-                        angle.appendChild(imgTag);                                
-                        let ACC = document.getElementsByClassName(`angle` + index2)[0].querySelector(".layer" + (index + 2));                                
-                        ACC.src = params['ACC' + i][index2];                                
-                        ACC.setAttribute("id", `${index2}-ACC`);                            
-                    }                        
-                }                
-                i++            
-            }
+            // iterator = Object.keys(params);            
+            // for (let index = 0; index < iterator.length; index++) {
+            //     let i = 1;
+            //     if (iterator[index] == 'HOTSPOT') {} else    
+            //     if (iterator[index] == 'EXT_GRD') {} else        
+            //     if (iterator[index] == 'EXT_WH') {} else {            
+            //         for (let index2 = 0; index2 < 36; index2++) {
+            //             var imgTag = document.createElement('img');
+            //             imgTag.className = 'drawTarget layer' + (index + 2);
+            //             imgTag.draggable = false;
+            //             let angle = document.getElementsByClassName(`angle` + index2)[0];
+            //             angle.appendChild(imgTag);
+            //             let ACC = document.getElementsByClassName(`angle` + index2)[0].querySelector(".layer" + (index + 2));
+            //             ACC.src = params['ACC' + i][index2];
+            //             ACC.setAttribute("id", `${index2}-ACC`);            
+            //         }        
+            //     }
+            //     i++            
+            // }
         }   
+
         function positionHotspot(params) {            
             var iDiv = document.createElement('span');            
             iDiv.id = params.feature_id;            
@@ -1359,7 +1379,7 @@
             let closebtn = document.createElement('p');            
             closebtn.className = 'fp-closeBtn';            
             descBlock.appendChild(closebtn);            
-            closebtn.ontouchend = closedialog.bind(closebtn, params.feature_id);
+            // closebtn.ontouchend = closedialog.bind(closebtn, params.feature_id);
             var imgDiv = document.createElement('div');            
             imgDiv.className = 'fp-thumb';            
             var imgDesc = document.createElement('img');            
@@ -1378,40 +1398,44 @@
             descBlock.appendChild(DescDiv);            
             document.getElementById('fp-descriptions').appendChild(descBlock);            
             descBlock.style.display = 'none';            
-            iDiv.ontouchend = opendialog.bind(iDiv, params.feature_id);            
+            // iDiv.ontouchend = opendialog.bind(iDiv, params.feature_id);
+            iDiv.addEventListener('click', opendialog)            
+            closebtn.addEventListener('click', closedialog)
             positionHotspotFunction(params);
         }
 
         function positionHotspotFunction(params) {            
-            for (i = 0; i < params.positions.length; i++) {                
-                axis = params.positions[i];                
-                if (axis.x == null || axis.y == null || axis.x == 0 || axis.y == 0) {                    
-                    document.getElementById(params.feature_id).style.display = "none";                    
-                    document.getElementById(params.feature_id).style.left = "0px";                    
-                    document.getElementById(params.feature_id).style.top = "0px";                
-                } else {                    
-                    document.getElementById(params.feature_id).style.display = "block";                    
+            for (i = 0; i < params.positions.length; i++) {
+                axis = params.positions[i];
+                if (axis.x == null || axis.y == null || axis.x == 0 || axis.y == 0) {    
+                    document.getElementById(params.feature_id).style.display = "none";    
+                    document.getElementById(params.feature_id).style.left = "0px";    
+                    document.getElementById(params.feature_id).style.top = "0px";
+                } else {    
+                    document.getElementById(params.feature_id).style.display = "block";    
                     document.getElementById(params.feature_id).style.left = axis.x.toString() + "px";
                     document.getElementById(params.feature_id).style.top = axis.y.toString() + "px";
                 }            
             }        
         }      
+
         function get_Interior(params) {            
             params = JSON.parse(params);            
             document.getElementById('exteriorStage').style.display = 'none';            
             document.getElementById('func-point').style.visibility = 'hidden';            
-            if (params.interiorImages) {                
-                let path = params.interiorImages;                
+            if (params.interiorImages) {
+                let path = params.interiorImages;
                 panorama = new PANOLENS.CubePanorama([path[0], path[1], path[2], path[3], path[4], path[5]]);
-                viewer = new PANOLENS.Viewer();                
+                viewer = new PANOLENS.Viewer();
                 viewer.add(panorama);            
             }            
-            if (params.interiorHotspot) {                
-                for (let index = 0; index < params.interiorHotspot.length; index++) {                    
+            if (params.interiorHotspot) {
+                for (let index = 0; index < params.interiorHotspot.length; index++) {    
                     positionIntHotspot(params.interiorHotspot[index]);
                 }            
             }        
         } 
+
         function positionIntHotspot(params) {            
             var featureId = document.createElement('div');            
             featureId.id = params.feature_id;            
@@ -1447,6 +1471,7 @@
             console.log(document.getElementById('chair-container'));            
             addInfospots(params);        
         }     
+
         function addInfospots(params) {            
             var infospot = new PANOLENS.Infospot(1, PANOLENS.DataImage.Info);            
             infospot.position.set(params.positions[0].x, params.positions[0].y, params.positions[0].z);            
